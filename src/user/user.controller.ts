@@ -4,6 +4,7 @@ import { LoginUserDto } from './dto/loginUser.dto';
 import { UserResponseInterface } from './types/userResponse.interface';
 import { UserService } from './user.service';
 import {Request} from 'express';
+import { ExpressRequestInterface } from 'src/types/expressRequest.interface';
 @Controller()
 export class UserController {
     constructor (private readonly userService: UserService) {}
@@ -23,8 +24,7 @@ export class UserController {
     }
 
     @Get('user')
-    async currentUser(@Req() request: Request): Promise<UserResponseInterface> {
-        console.log('request', request.headers)
-        return 'currentUser' as any;
+    async currentUser(@Req() request: ExpressRequestInterface): Promise<UserResponseInterface> {
+        return this.userService.buildUserResponse(request.user);
     }
 }
