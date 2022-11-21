@@ -7,10 +7,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserEntity } from './user/user.entity';
 import { TagEntity } from './tag/tag.entity';
 import { AuthMiddleware } from './user/middlewares/auth.middleware';
+import { ArticleModule } from './article/article.module';
 @Module({
   imports: [
     TagModule,
     UserModule,
+    ArticleModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
