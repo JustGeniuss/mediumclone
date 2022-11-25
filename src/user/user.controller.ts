@@ -13,13 +13,10 @@ import { CreateUserDto } from './dto/createUser.dto';
 import { LoginUserDto } from './dto/loginUser.dto';
 import { UserResponseInterface } from './types/userResponse.interface';
 import { UserService } from './user.service';
-import { Request } from 'express';
-import { ExpressRequestInterface } from 'src/types/expressRequest.interface';
 import { User } from './decoratots/user.decorator';
 import { UserEntity } from './user.entity';
 import { AuthGuard } from './guards/auth.guard';
 import { UpdateUserDto } from './dto/updateUser.dto';
-import { UpdateResult } from 'typeorm';
 @Controller()
 export class UserController {
   constructor(private readonly userService: UserService) {}

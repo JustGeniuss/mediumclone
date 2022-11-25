@@ -8,6 +8,7 @@ import { UserEntity } from './user/user.entity';
 import { TagEntity } from './tag/tag.entity';
 import { AuthMiddleware } from './user/middlewares/auth.middleware';
 import { ArticleModule } from './article/article.module';
+import { ArticleEntity } from './article/article.entity';
 @Module({
   imports: [
     TagModule,
@@ -24,7 +25,7 @@ import { ArticleModule } from './article/article.module';
           username: configService.get('DB_USERNAME'),
           password: configService.get('DB_PASSWORD'),
           database: configService.get('DB_DATABASE'),
-          entities: [UserEntity, TagEntity],
+          entities: [UserEntity, TagEntity, ArticleEntity],
           synchronize: configService.get('DB_SYNC') === 'false',
           keepConnectionAlive: true,
         } as TypeOrmModuleAsyncOptions;
