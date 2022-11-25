@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
 import { ArticleEntity } from 'src/article/article.entity';
-import { CreateArticleDto } from './dto/create.article.dto';
+import { CreateArticleDto } from './dto/createArticle.dto';
 
 @Injectable()
 export class ArticleService {
@@ -21,6 +21,7 @@ export class ArticleService {
     if (!article.tagList) {
       article.tagList = [];
     }
+    article.slug = 'foo';
     article.author = currentUser;
 
     return await this.articleRepository.save(article);
