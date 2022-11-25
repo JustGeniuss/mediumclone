@@ -9,6 +9,7 @@ import {
   UseGuards,
   UsePipes,
   ValidationPipe,
+  Query,
 } from '@nestjs/common';
 import { User } from 'src/user/decoratots/user.decorator';
 import { AuthGuard } from 'src/user/guards/auth.guard';
@@ -16,10 +17,19 @@ import { UserEntity } from 'src/user/user.entity';
 import { ArticleService } from './article.service';
 import { CreateArticleDto } from './dto/createArticle.dto';
 import { ArticleResponseInterface } from './types/articleResponse.interface';
+import { ArticlesResponseInterface } from './types/articlesResponse.interface';
 
 @Controller('articles')
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
+
+  @Get()
+  async findAll(
+    @User('id') currentUserId: number,
+    @Query() query: any,
+  ): Promise<ArticlesResponseInterface> {
+    return await this.articleService.findAll(currentUserId, query);
+  }
 
   @Post()
   @UseGuards(AuthGuard)
@@ -59,7 +69,11 @@ export class ArticleController {
     @Param('slug') slug: string,
     @Body('article') updateArticleDto: CreateArticleDto,
   ): Promise<ArticleResponseInterface> {
-    const article = await this.articleService.updateArticle(slug, currentUserId, updateArticleDto);
+    const article = await this.articleService.updateArticle(
+      slug,
+      currentUserId,
+      updateArticleDto,
+    );
     return this.articleService.buildArticleResponse(article);
   }
 }
