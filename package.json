@@ -17,10 +17,13 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "typeorm": "ts-node ./node_modules/typeorm/cli -d ormconfig.ts",
-    "migration:generate": "npm run typeorm migration:generate src/migrations/$npm_config_name",
-    "db:drop": "npm run typeorm schema:drop",
-    "db:migrate": "npm run typeorm migration:run"
+    "typeorm": "npm run build && npx typeorm -d dist/db/data-source.js",
+    "migration:create": "npm run build && npm run typeorm migration:create -- -n",
+    "migration:generate": "npm run typeorm -- migration:generate",
+    "migration:run": "npm run build && npm run typeorm migration:run",
+    "migration:down": "npm run typeorm migration:revert",
+    "db:drop":"npm run typeorm schema:drop",
+    "seed": "npm run build && npx typeorm -d dist/db/seedDb.js migration:run"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
@@ -51,6 +54,7 @@
     "@types/supertest": "^2.0.11",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
+    "dotenv": "^16.0.3",
     "eslint": "^8.0.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
