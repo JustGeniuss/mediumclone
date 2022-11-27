@@ -5,7 +5,6 @@ import { CreateUserDto } from './dto/createUser.dto';
 import { UserEntity } from './user.entity';
 import { sign } from 'jsonwebtoken';
 import { compare } from 'bcrypt';
-import { JWT_SECRET } from 'src/config';
 import { UserResponseInterface } from './types/userResponse.interface';
 import { LoginUserDto } from './dto/loginUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
@@ -83,7 +82,7 @@ export class UserService {
         username: user.username,
         email: user.email,
       },
-      JWT_SECRET,
+      process.env.JWT_SECRET,
     );
   }
 
