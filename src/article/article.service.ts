@@ -45,14 +45,14 @@ export class ArticleService {
     if (query.favorited) {
       const author = await this.userRepository.findOne({
         where: { username: query.favorited },
-        relations: ["favorites"]
+        relations: ['favorites'],
       });
-      const ids = author.favorites.map((el)=>el.id);
+      const ids = author.favorites.map((el) => el.id);
       if (ids.length > 0) {
-        console.log(ids)
-        queryBuilder.andWhere("articles.id IN (:...ids)", {ids: ids})
+        console.log(ids);
+        queryBuilder.andWhere('articles.id IN (:...ids)', { ids: ids });
       } else {
-        console.log(2)
+        console.log(2);
         queryBuilder.andWhere('1=0');
       }
     }
@@ -69,16 +69,16 @@ export class ArticleService {
     if (currentUserId) {
       const currentUser = await this.userRepository.findOne({
         where: { id: currentUserId },
-        relations: ["favorites"]
+        relations: ['favorites'],
       });
-      favoriteIds = currentUser.favorites.map(favorite => favorite.id);
+      favoriteIds = currentUser.favorites.map((favorite) => favorite.id);
     }
 
     const articles = await queryBuilder.getMany();
-    const articlesWithFavorites = articles.map(article => {
+    const articlesWithFavorites = articles.map((article) => {
       const favorited = favoriteIds.includes(article.id);
-      return {...article, favorited}
-    })
+      return { ...article, favorited };
+    });
 
     return { articles: articlesWithFavorites, articlesCount };
   }
@@ -169,7 +169,7 @@ export class ArticleService {
       (articleInFavorites) => articleInFavorites.id === article.id,
     );
 
-    if( articleIndex >= 0) {
+    if (articleIndex >= 0) {
       user.favorites.splice(articleIndex, 1);
       article.favoritesCount--;
       await this.userRepository.save(user);
