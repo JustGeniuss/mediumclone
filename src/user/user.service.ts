@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository} from 'typeorm';
+import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UserEntity } from './user.entity';
 import { sign } from 'jsonwebtoken';
@@ -15,17 +15,23 @@ export class UserService {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
   async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
+    const errorResponse = {
+      errors: {},
+    };
     const userByEmail = await this.userRepository.findOneBy({
       email: createUserDto.email,
     });
     const userByUsername = await this.userRepository.findOneBy({
       username: createUserDto.username,
     });
+    if (userByEmail) {
+      errorResponse.errors['email'] = 'has already been taken';
+    }
+    if (userByUsername) {
+      errorResponse.errors['username'] = 'has already been taken';
+    }
     if (userByUsername || userByEmail) {
-      throw new HttpException(
-        'Email or username are taken',
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      throw new HttpException(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
     }
     const newUser = new UserEntity();
     Object.assign(newUser, createUserDto);
@@ -33,6 +39,11 @@ export class UserService {
   }
 
   async login(loginUserDto: LoginUserDto): Promise<UserEntity> {
+    const errorResponse = {
+      errors: {
+        'email or password': 'is invalid',
+      },
+    };
     const user = await this.userRepository.findOne({
       select: {
         id: true,
@@ -45,20 +56,14 @@ export class UserService {
       where: { email: loginUserDto.email },
     });
     if (!user) {
-      throw new HttpException(
-        'Credential are not valid',
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      throw new HttpException(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
     }
     const isPasswordCorrect = await compare(
       loginUserDto.password,
       user.password,
     );
     if (!isPasswordCorrect) {
-      throw new HttpException(
-        'Credential are not valid',
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      throw new HttpException(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
     }
     delete user.password;
 
@@ -69,8 +74,11 @@ export class UserService {
     return this.userRepository.findOne({ where: { id: id } });
   }
 
-  async updateUser(updatefields: UpdateUserDto, userId: number): Promise<UserEntity> {
-    const user = await this.findById(userId)
+  async updateUser(
+    updatefields: UpdateUserDto,
+    userId: number,
+  ): Promise<UserEntity> {
+    const user = await this.findById(userId);
     Object.assign(user, updatefields);
     return await this.userRepository.save(user);
   }
