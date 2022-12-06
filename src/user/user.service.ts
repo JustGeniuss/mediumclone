@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UserEntity } from './user.entity';
 import { sign } from 'jsonwebtoken';
-import { compare } from 'bcrypt';
+import { compare } from 'bcryptjs';
 import { UserResponseInterface } from './types/userResponse.interface';
 import { LoginUserDto } from './dto/loginUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
