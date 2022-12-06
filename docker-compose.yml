@@ -1,0 +1,33 @@
+version: '3.0'
+
+
+services:
+  main:
+    build: .
+    restart: always
+    ports:
+     - "5555:5000"
+    volumes: 
+      - .:/app
+      - /app/node_modules
+    depends_on: 
+      - postgres
+    env_file:
+     - .env
+
+  postgres:
+    image: postgres:12
+    environment:
+      PG_DATA: /var/lib/postgresql/data
+      POSTGRES_USER: mediumclone
+      POSTGRES_DB: mediumclone
+      POSTGRES_PASSWORD: 123
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+
+ 
+volumes:
+  pgdata:
